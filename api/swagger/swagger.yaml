@@ -1,0 +1,175 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Space Rental App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /stat:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: service
+    get:
+      description: See overall statistics of business
+      # used as the method name of the controller
+      operationId: getStat
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /product:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: service
+    get:
+      description: See all type of product avaiable
+      # used as the method name of the controller
+      operationId: getProductTypes
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ProductTypesResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /import:
+    x-swagger-router-controller: service
+    post:
+      description: usage the service of rental center
+      operationId: doImport
+      parameters:
+        - in: body
+          name: product
+          description: type of product you want to use in service ()
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ProductRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ProductResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /export:
+    x-swagger-router-controller: service
+    post:
+      description: usage the service of rental center
+      operationId: doExport
+      parameters:
+        - in: body
+          name: product
+          description: type of product you want to use in service ()
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ProductExportRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ProductResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  ProductExportRequest:
+    required:
+      - key
+      - name
+      - token
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+  ProductRequest:
+    required:
+      - name
+      - volume
+      - token
+    properties:
+      name:
+        type: string
+      volume:
+        type: number
+      token:
+        type: string
+  ProductResponse:
+    required:
+      - key
+      - name
+      - volume
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+      volume:
+        type: number
+      price:
+        type: number
+      days:
+        type: number
+  ProductTypesResponse:
+    required:
+      - name
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
